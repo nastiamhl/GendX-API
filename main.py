@@ -13,8 +13,22 @@ def welcome():
     return "Welcome route"
 
 
+@app.route('/doc/with_open_cv')
+def doc_open_cv():
+    # TODO:Create .html with description for gendx with opencv api
+    # return render_template()
+    return "Doc with open cv"
+
+
+@app.route('/doc/clear_gendx')
+def doc_without_open_cv():
+    # TODO: Create .html with description for clear gendx api
+    # return render_template()
+    return "Doc without open cv"
+
+
 # route for recognition without opencv for 1 person
-@app.route('/recognize_one')
+@app.route('/recognize')
 def recognize_one_obj():
     # TODO: Connect to Core Module
     # dummy result
