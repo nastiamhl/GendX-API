@@ -1,5 +1,8 @@
-from flask import Flask, jsonify, render_template
+from flask import Flask, jsonify, render_template, request, Response
 from flask_restful import Api, Resource
+import jsonpickle
+import numpy as np
+import cv2
 
 app = Flask(__name__)
 api = Api(app)
@@ -28,7 +31,7 @@ def doc_without_open_cv():
 
 
 # route for recognition without opencv for 1 person
-@app.route('/recognize')
+@app.route('api/recognize')
 def recognize_one_obj():
     # TODO: Connect to Core Module
     # dummy result
@@ -39,14 +42,30 @@ def recognize_one_obj():
 
 
 # route for recognition
-@app.route('/recognize_with_opencv')
+@app.route('api/recognize_with_opencv')
 def recognize_with_opencv():
     # TODO: Connect to Core Module
     # dummy result
     result = {
-        "result": "male"
+        "result": "true"
     }
     return jsonify(result)
+
+
+# Test receiving images
+@app.route('/api/test', methods=['POST'])
+def test():
+    r = request
+    # convert string of image data to uint8
+    numpy_arr = np.fromstring(r.data, np.uint8)
+    # decode image
+    image = cv2.imdecode(numpy_arr, cv2.IMREAD_COLOR)
+
+    response = {'msg': 'image received. size={}x{}'.format(image.shape[1], image.shape[0])
+                }
+    # encode response
+    response_encoded = jsonpickle.encode(response)
+    return Response(response=response_encoded, status=200, mimetype="application/json")
 
 
 if __name__ == '__main__':
