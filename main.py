@@ -14,9 +14,6 @@ api = Api(app)
 counter = 0
 
 
-# TODO: init GendX and OpenCV
-
-
 # route for documentation
 @app.route('/')
 def welcome():
@@ -49,11 +46,13 @@ def recognize_one_obj():
     image_result = open(image_path, 'wb')
     image_result.write(image_64_decode)
 
+    img = Image.open(image_path)
+
     # preparing response
     response = {
         "accuracy": "85%",
-        "format": "(1200, 630)",
-        "gender": "test_data"  # paste result here
+        "format": "{}".format(img.size),
+        "gender": "test_result"
     }
 
     # increase counter for next file path
@@ -82,13 +81,13 @@ def recognize_with_open_cv():
     # open saved image
     img = Image.open(image_path)
 
-    # TODO: crop images and return paths
+    # crop images and return paths
     faces_arr = list()
 
-    people_json = {}
+    people_json = []
 
     for i in range(0, len(faces_arr)):
-        people_json[str(i)] = {"gender": "test_data"}  # paste results here
+        people_json.append({"gender": "test_result"})
 
     # json response
     response = {"accuracy": "85%",
@@ -113,7 +112,7 @@ def test():
     image_result.write(image_64_decode)
 
     response = {
-        "msg": "received {}".format(type(r))
+        "msg": "received {}".format(r)
     }
     response_json = jsonpickle.encode(response)
 
@@ -139,4 +138,4 @@ def shutdown():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=5000)
